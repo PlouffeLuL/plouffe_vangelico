@@ -1,7 +1,7 @@
 Vr = {}
 TriggerServerEvent("plouffe_vangelico:sendConfig")
-
-RegisterNetEvent("plouffe_vangelico:getConfig",function(list)
+local cookie
+cookie = RegisterNetEvent("plouffe_vangelico:getConfig",function(list)
 	if not list then
 		while true do
 			Vr = nil
@@ -13,4 +13,6 @@ RegisterNetEvent("plouffe_vangelico:getConfig",function(list)
 
 		Vr:Start()
 	end
+
+	RemoveEventHandler(cookie)
 end)

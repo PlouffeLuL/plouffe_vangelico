@@ -1,5 +1,6 @@
 local Utils = exports.plouffe_lib:Get("Utils")
 local Callback = exports.plouffe_lib:Get("Callback")
+local Interface = exports.plouffe_lib:Get("Interface")
 
 local Animation = {
     ComputerHack = {dict = "missheist_jewel@hacking"},
@@ -110,7 +111,7 @@ function Vr.EntityDamage(victim, culprit, weapon, baseDamage)
     end
 
     local hasControl = Utils:AssureEntityControl(victim, 1000)
-    
+
     if not hasControl then
         return
     end
@@ -125,7 +126,7 @@ function Vr.EntityDamage(victim, culprit, weapon, baseDamage)
     SetEntityCoords(oneEntity, coords.x, coords.y, coords.z)
     SetEntityRotation(oneEntity, rotation.x, rotation.y, rotation.z)
     FreezeEntityPosition(oneEntity, true)
-    
+
     local twoEntity =  Utils:CreateProp(valid.two,  {x = coords.x, y = coords.y, z = coords.z}, nil, true, true)
     SetEntityCollision(twoEntity, false, true)
     SetEntityCoords(twoEntity, coords.x, coords.y, coords.z)
@@ -180,7 +181,7 @@ function Vr.Inside()
             if GlobalState.VangelicoRobbery == "Started" then
                 sleepTimer = 0
                 local impact, coords = GetPedLastWeaponImpactCoord(ped)
-                
+
                 if impact and GlobalState.VangelicoRobberyOffice == "Locked" then
                     local dstCheck = #(coords - vec3(-628.101379, -229.463852, 38.070023))
 
@@ -234,7 +235,15 @@ function Vr:Tryhack()
         return
     end
 
-    local succes = exports.hacking:start(10, 3)
+    local succes = Interface.Reaction.New({
+        amount = 10,
+        speed = 5,
+        time = 30,
+        errors = 2,
+        delay = 3,
+        clickTimer = 1000,
+        wins = 8
+    })
 
     Hack:Exit()
 
@@ -257,21 +266,33 @@ function Vr.TryGrinder()
     end
 
     local canRob, reason = Callback:Sync("plouffe_vangelico:canRob", Vr.Utils.MyAuthKey)
-    
+
     if not canRob then
-        return
+        return Interface.Notifications.Show({
+            style = "error",
+            header = "Vangelico",
+            message = reason
+        })
     end
-    
+
     local Grinder = Animation.Grinder:Start()
-    local succes = exports.memorygame:start(3,3,3,20)
-    
+    local succes = Interface.MemorySquares.New({
+        time = 20,
+        amount = 8,
+        solutionAmount = 8,
+        errors = 3,
+        delay = 2
+    })
+
     TriggerServerEvent("plouffe_vangelico:entry_grinder", succes, Vr.Utils.MyAuthKey)
 
     if not succes then
         return Grinder:Finished()
     end
-    
-    exports.plouffe_dispatch:SendAlert("10-90 D")
+
+    if GetResourceState("plouffe_dispatch") == "started" then
+        exports.plouffe_dispatch:SendAlert("10-90 D")
+    end
 
     CreateThread(Vr.GrinderGuards)
 
@@ -280,6 +301,10 @@ end
 exports("TryGrinder", Vr.TryGrinder)
 
 function Vr:CreateGuard(coords)
+    if not Vr.UseGuards then
+        return
+    end
+
     local model = "s_m_m_security_01"
     local weapon = "weapon_pumpshotgun_mk2"
 
@@ -296,7 +321,7 @@ function Vr:CreateGuard(coords)
 end
 
 function Vr:HandleGuards(ped)
-    
+
     table.insert(self.Guards, ped)
 
     if #self.Guards > 1 then
@@ -313,7 +338,7 @@ function Vr:HandleGuards(ped)
                 if IsPedDeadOrDying(v) or not DoesEntityExist(v) then
                     SetPedAsNoLongerNeeded(v)
                     remove[#remove + 1] = k
-                end 
+                end
             end
 
             if #remove > 0 then
@@ -321,7 +346,7 @@ function Vr:HandleGuards(ped)
                     self.Guards[v] = nil
                 end
             end
-        end  
+        end
     end)
 end
 
@@ -387,10 +412,10 @@ function Animation.Grinder:Cut()
 
     SetPtfxAssetNextCall(self.ptfxAsset)
     self.ptfx = StartNetworkedParticleFxLoopedOnEntity('scr_tn_tr_angle_grinder_sparks', self.grinderEntity,  0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 1.0, false, false, false, 1065353216, 1065353216, 1065353216, 1)
-    
+
     Wait(1000)
     RemoveParticleFx(self.ptfx)
-    
+
     Wait(2000)
     self:Finished()
 end
@@ -402,7 +427,7 @@ function Animation.Grinder:Finished()
     DeleteEntity(self.grinderEntity)
 
     RemoveAnimDict(self.dict)
-    RemovePtfxAsset(self.ptfxAsset) 
+    RemovePtfxAsset(self.ptfxAsset)
 end
 
 function Animation.Loot:Prepare()
@@ -479,7 +504,7 @@ function Animation.ComputerHack:Start()
     NetworkStartSynchronisedScene(scene)
 
     Wait(500)
-    
+
     CreateThread(function()
         self:Loop()
     end)

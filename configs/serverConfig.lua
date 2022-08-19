@@ -1,8 +1,3 @@
-Auth = exports.plouffe_lib:Get("Auth")
-Utils = exports.plouffe_lib:Get("Utils")
-Callback = exports.plouffe_lib:Get("Callback")
-Inventory = exports.plouffe_lib:Get("Inventory")
-
 Server = {
   ready = false,
 }
@@ -308,13 +303,4 @@ Vr.RobberyZones = {
         event = "plouffe_vangelico:onZone"
     }
   },
-}
-
-Vr.Loots = {
-  {name = "diamond", min = 1, max = 2},
-  {name = "diamond_ring", min = 1, max = 2},
-  {name = "gold_chain", min = 1, max = 2},
-  {name = "gold_ring", min = 1, max = 2},
-  {name = "gold_watch", min = 1, max = 2},
-  {name = "silver_watch", min = 1, max = 2}
 }
