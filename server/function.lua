@@ -2,6 +2,7 @@ local Auth = exports.plouffe_lib:Get("Auth")
 local Callback = exports.plouffe_lib:Get("Callback")
 local Inventory = exports.plouffe_lib:Get("Inventory")
 local Groups = exports.plouffe_lib:Get("Groups")
+local Utils = exports.plouffe_lib:Get("Utils")
 local Lang = exports.plouffe_lib:Get("Lang")
 
 local lastRob = GetResourceKvpInt("lastRob") or 0
@@ -9,7 +10,6 @@ local startTime = 0
 
 local doors = {
     vangelico_entry = {
-        register = true,
         lock = true,
         lockOnly = true,
         interactCoords = {
@@ -27,7 +27,6 @@ local doors = {
     },
 
     vangelico_office = {
-        register = true,
         lock = true,
         lockOnly = true,
         interactCoords = {
@@ -66,7 +65,7 @@ end
 
 function Vr.ExportsAllDoors()
     for k,v in pairs(doors) do
-        exports.plouffe_doorlock:RegisterDoor(k,v, false)
+        exports.plouffe_doorlock:RegisterDoor(k, v, false)
     end
 end
 
@@ -180,7 +179,7 @@ function Vr:RefreshRobbery()
     }, true)
 end
 
-function Vr:CanRob()
+function Vr:CanRob(playerId)
     if os.time() - lastRob > Vr.robIntervall and GlobalState.VangelicoRobbery ~= "Ready" then
         self:RefreshRobbery()
     end
@@ -217,7 +216,7 @@ function Vr.OpenEntry(succes, authkey)
         return
     end
 
-    if not Vr:CanRob() then
+    if not Vr:CanRob(playerId) then
         return
     end
 
@@ -332,9 +331,9 @@ function Vr.TryLoot(index,authkey)
 end
 
 Callback:RegisterServerCallback("plouffe_vangelico:canRob", function(source, cb, authkey)
-    local _source = source
-    if Auth:Validate(_source,authkey) and Auth:Events(_source,"plouffe_vangelico:canRob") then
-        cb(Vr:CanRob())
+    local playerId = source
+    if Auth:Validate(playerId,authkey) and Auth:Events(playerId,"plouffe_vangelico:canRob") then
+        cb(Vr:CanRob(playerId))
     else
         cb(false)
     end
