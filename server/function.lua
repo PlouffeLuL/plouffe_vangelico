@@ -198,12 +198,15 @@ function Vr:CanRob(playerId)
         return false, Lang.missing_something
     end
 
+    local count = 0
+
     for k,v in pairs(self.PoliceGroups) do
         local cops = Groups:GetGroupPlayers(v)
+        count += cops.len
+    end
 
-        if cops.len < self.MinCops then
-            return false, Lang.bank_notEnoughCop
-        end
+    if count < self.MinCops then
+        return false, Lang.bank_notEnoughCop
     end
 
     return true
