@@ -1,14 +1,14 @@
-fx_version "adamant"
+fx_version 'cerulean'
 
 games { 'gta5'}
 lua54 'yes'
 use_experimental_fxv2_oal 'yes'
 
--- data_file 'TRAINCONFIGS_FILE' 'data/trains.xml'
-
--- files {
--- 	'data/trains.xml',
--- }
+name         'plouffe_vangelico'
+author       'PlouffeLuL'
+version      '1.0.0'
+repository   'https://github.com/plouffelul/plouffe_vangelico'
+description  'Vangelico robbery script'
 
 client_scripts {
 	'configs/clientConfig.lua',
