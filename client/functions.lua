@@ -110,7 +110,7 @@ function Vr.EntityDamage(victim, culprit, weapon, baseDamage)
         return
     end
 
-    local hasControl = Utils:AssureEntityControl(victim, 1000)
+    local hasControl = Utils.AssureEntityControl(victim, 1000)
 
     if not hasControl then
         return
@@ -121,13 +121,13 @@ function Vr.EntityDamage(victim, culprit, weapon, baseDamage)
 
     DeleteEntity(victim)
 
-    local oneEntity =  Utils:CreateProp(valid.one,  {x = coords.x, y = coords.y, z = coords.z}, nil, true, true)
+    local oneEntity =  Utils.CreateProp(valid.one,  {x = coords.x, y = coords.y, z = coords.z}, nil, true, true)
     SetEntityCollision(oneEntity, false, true)
     SetEntityCoords(oneEntity, coords.x, coords.y, coords.z)
     SetEntityRotation(oneEntity, rotation.x, rotation.y, rotation.z)
     FreezeEntityPosition(oneEntity, true)
 
-    local twoEntity =  Utils:CreateProp(valid.two,  {x = coords.x, y = coords.y, z = coords.z}, nil, true, true)
+    local twoEntity =  Utils.CreateProp(valid.two,  {x = coords.x, y = coords.y, z = coords.z}, nil, true, true)
     SetEntityCollision(twoEntity, false, true)
     SetEntityCoords(twoEntity, coords.x, coords.y, coords.z)
     SetEntityRotation(twoEntity, rotation.x, rotation.y, rotation.z)
@@ -265,7 +265,7 @@ function Vr.TryGrinder()
         return
     end
 
-    local canRob, reason = Callback:Sync("plouffe_vangelico:canRob", Vr.Utils.MyAuthKey)
+    local canRob, reason = Callback.Sync("plouffe_vangelico:canRob", Vr.Utils.MyAuthKey)
 
     if not canRob then
         return Interface.Notifications.Show({
@@ -308,7 +308,7 @@ function Vr:CreateGuard(coords)
     local model = "s_m_m_security_01"
     local weapon = "weapon_pumpshotgun_mk2"
 
-    local ped = Utils:SpawnPed(model, coords, 0.0, true, true)
+    local ped = Utils.SpawnPed(model, coords, 0.0, true, true)
 
     GiveWeaponToPed(ped, joaat(weapon), 999, false, true)
     TaskCombatPed(ped, PlayerPedId())
@@ -371,15 +371,15 @@ end
 function Animation.Grinder:Prepare()
     self.state = "Prepare"
 
-    Utils:AssureAnim(self.dict, true)
-    Utils:AssureFxAsset(self.ptfxAsset, true)
+    Utils.AssureAnim(self.dict, true)
+    Utils.AssureFxAsset(self.ptfxAsset, true)
 
     self.ped = PlayerPedId()
     self.pedCoords = GetEntityCoords(self.ped)
     self.pedRotation = GetEntityRotation(self.ped)
 
-    self.grinderEntity = Utils:CreateProp("tr_prop_tr_grinder_01a", {x = self.pedCoords.x, y = self.pedCoords.y, z = self.pedCoords.z - 5.0}, nil, true, true)
-    self.bagEntity =  Utils:CreateProp("hei_p_m_bag_var22_arm_s", {x = self.pedCoords.x, y = self.pedCoords.y, z = self.pedCoords.z - 5.0}, nil, true, true)
+    self.grinderEntity = Utils.CreateProp("tr_prop_tr_grinder_01a", {x = self.pedCoords.x, y = self.pedCoords.y, z = self.pedCoords.z - 5.0}, nil, true, true)
+    self.bagEntity =  Utils.CreateProp("hei_p_m_bag_var22_arm_s", {x = self.pedCoords.x, y = self.pedCoords.y, z = self.pedCoords.z - 5.0}, nil, true, true)
 
     self.offset = GetOffsetFromEntityInWorldCoords(self.ped, -0.1, 2.7, -1.0)
 
@@ -433,8 +433,8 @@ end
 function Animation.Loot:Prepare()
     self.state = "Prepare"
 
-    Utils:AssureAnim(self.dict, true)
-    Utils:AssureFxAsset(self.ptfxAsset, true)
+    Utils.AssureAnim(self.dict, true)
+    Utils.AssureFxAsset(self.ptfxAsset, true)
 
     self.ped = PlayerPedId()
     self.pedCoords = GetEntityCoords(self.ped)
@@ -481,7 +481,7 @@ end
 function Animation.ComputerHack:Prepare()
     self.state = "Prepare"
 
-    Utils:AssureAnim(self.dict, true)
+    Utils.AssureAnim(self.dict, true)
 
     self.ped = PlayerPedId()
     self.pedCoords = GetEntityCoords(self.ped)

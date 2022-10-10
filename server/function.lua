@@ -45,7 +45,7 @@ local doors = {
 
 function Vr.Init()
     Vr.ValidateConfig()
-    Utils:CreateDepencie("plouffe_doorlock", Vr.ExportsAllDoors)
+    Utils.CreateDepencie("plouffe_doorlock", Vr.ExportsAllDoors)
     GlobalState.VangelicoRobbery = "Ready"
     GlobalState.VangelicoRobberyOffice = "Locked"
     Server.ready = true
@@ -71,7 +71,7 @@ end
 
 function Vr.LoadPlayer()
     local playerId = source
-    local registred, key = Auth:Register(playerId)
+    local registred, key = Auth.Register(playerId)
 
     while not Server.ready do
         Wait(100)
@@ -201,7 +201,7 @@ function Vr:CanRob(playerId)
     local count = 0
 
     for k,v in pairs(self.PoliceGroups) do
-        local cops = Groups:GetGroupPlayers(v)
+        local cops = Groups.GetGroupPlayers(v)
         count += cops.len
     end
 
@@ -215,7 +215,7 @@ end
 function Vr.OpenEntry(succes, authkey)
     local playerId = source
 
-    if not Auth:Validate(playerId,authkey) or not Auth:Events(playerId,"plouffe_vangelico:entry_grinder") then
+    if not Auth.Validate(playerId,authkey) or not Auth.Events(playerId,"plouffe_vangelico:entry_grinder") then
         return
     end
 
@@ -255,7 +255,7 @@ end
 function Vr.HackSucces(authkey)
     local playerId = source
 
-    if not Auth:Validate(playerId,authkey) or not Auth:Events(playerId,"plouffe_vangelico:hack_succes") then
+    if not Auth.Validate(playerId,authkey) or not Auth.Events(playerId,"plouffe_vangelico:hack_succes") then
         return
     end
 
@@ -273,7 +273,7 @@ end
 function Vr.OpenOffice(authkey)
     local playerId = source
 
-    if not Auth:Validate(playerId,authkey) or not Auth:Events(playerId,"plouffe_vangelico:unlock_office") then
+    if not Auth.Validate(playerId,authkey) or not Auth.Events(playerId,"plouffe_vangelico:unlock_office") then
         return
     end
 
@@ -311,7 +311,7 @@ end
 function Vr.TryLoot(index,authkey)
     local playerId = source
 
-    if not Auth:Validate(playerId,authkey) or not Auth:Events(playerId,"plouffe_vangelico:try_loot") then
+    if not Auth.Validate(playerId,authkey) or not Auth.Events(playerId,"plouffe_vangelico:try_loot") then
         return
     end
 
@@ -333,12 +333,12 @@ function Vr.TryLoot(index,authkey)
     Inventory.AddItem(playerId, data.name, math.random(data.min, data.max))
 end
 
-Callback:RegisterServerCallback("plouffe_vangelico:canRob", function(source, cb, authkey)
+Callback.Register("plouffe_vangelico:canRob", function(source, authkey)
     local playerId = source
-    if Auth:Validate(playerId,authkey) and Auth:Events(playerId,"plouffe_vangelico:canRob") then
-        cb(Vr:CanRob(playerId))
+    if Auth.Validate(playerId,authkey) and Auth.Events(playerId,"plouffe_vangelico:canRob") then
+        return Vr:CanRob(playerId)
     else
-        cb(false)
+        return false
     end
 end)
 
